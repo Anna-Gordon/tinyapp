@@ -20,9 +20,12 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
+/**
+ * 
+   app.get("/", (req, res) => {
+     res.send("Hello!");
+   });
+ */
 
 app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase };
@@ -34,6 +37,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.post("/urls/new", (req, res) => {
+  //generates random shortURL, submit new short: long key-value pair to urlDatabase and redirects to urls_show page
   let shortURL = randomShortURL();
   urlDatabase[shortURL] = req.body.longURL;      
   res.redirect(`/urls/${shortURL}`);       
@@ -50,14 +54,16 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+/**
+ * 
+   app.get("/urls.json", (req, res) => {
+     res.json(urlDatabase);
+   });
+   
+   app.get("/hello", (req, res) => {
+     res.send("<html><body>Hello <b>World</b></body></html>\n");
+   });
+ */
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
