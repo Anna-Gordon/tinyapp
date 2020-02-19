@@ -7,6 +7,19 @@ const randomShortURL = function generateRandomShortURL() {
   return result.slice(0, 6);
 }
 
+const users = {
+  'userrandomID': {
+    id: 'userRandomID',
+    email: 'user@example.com',
+    password: 'purple-monkey-dinosaur'
+  },
+  'user2RandomID': {
+    id: 'user2RandomID', 
+    email: 'user2@example.com', 
+    password: 'dishwasher-funk'
+  }
+}
+
 const express = require("express");
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
@@ -23,6 +36,15 @@ function isLoggedIn(req, res, next) {
     return next();
   }
   res.redirect('/urls');
+}
+
+const userWithEmailExists = function (obj, value) {
+  for(let key in obj) {
+      if (obj[key].email === value) {
+      return true;
+    }
+  }
+  return false;
 }
 
 const urlDatabase = {
@@ -42,6 +64,34 @@ app.get('/urls', (req, res) => {
     username: req.cookies['username']
    };
   res.render('urls_index', templateVars);
+});
+
+app.get('/register', (req, res) => {
+  res.render('register_page');
+});
+
+app.post('/register', (req, res) => {
+  
+  // check if input was provided
+  if (req.body.email === '' || req.body.password === '') {
+    res.status(400).send('Bad request.  Provide email or password');
+    res.redirect('/register')
+  } 
+  
+  //check if email already exist
+  if (userWithEmailExists(users, req.body.email)) {
+    res.status(400).send('Bad request. User already exist');
+  } else {
+    let newUser = randomShortURL();
+    users[newUser] = {
+      id: newUser,
+      email: req.body.email,
+      password: req.body.password
+    };
+    res.cookie('user_id', newUser); 
+    res.redirect('/urls');      
+  }
+  // console.log("here are:", users[req.cookies['user_id']], req.cookies['user_id'])
 });
 
 app.get("/urls/new", (req, res) => {
