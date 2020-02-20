@@ -18,7 +18,17 @@ const users = {
     email: 'user2@example.com', 
     password: 'dishwasher-funk'
   }
-}
+};
+
+const checkUser = (req, res) => {
+  if (!req.cookies.user_id) {
+    res.redirect('/login')
+  }
+};
+
+const isUserOwnUrl = () => {
+
+};
 
 const express = require("express");
 const PORT = 8080; // default port 8080
@@ -30,6 +40,7 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
+
 // function isLoggedIn(req, res, next) {
 //   if (user) {
 //     res.locals.user = 'user_id';
@@ -47,19 +58,35 @@ const userObject = function (obj, value) {
   return false;
 }
 
+const urlsForUser = (data, id) => {
+  let shortURL;
+  let longURL;
+  const resultArr = []; 
+  for(let short in data) {
+    shortURL = short;
+    if (data[short].userID !== id) {
+      longURL = data[short].longURL;
+      resultArr.push({shortURL, longURL})
+    }
+  }
+  return resultArr; 
+};
+
+
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "userRandomID"},
+  "9sm5xK": {longURL: "http://www.google.com", userID: "user2RandomID"}
 };
 
 
 
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase,
+  checkUser(req, res);
+  let templateVars = { urls: urlsForUser(urlDatabase, req.cookies.user_id.id),
     user: req.cookies.user_id
-   };
-  res.render('urls_index', templateVars);
+  };
+    res.render('urls_index', templateVars);
 });
 
 app.get('/register', (req, res) => {
@@ -86,13 +113,14 @@ app.post('/register', (req, res) => {
       email: req.body.email,
       password: req.body.password
     };
-    res.cookie('user_id', newUser); 
+    res.cookie('user_id', users[newUser]); 
     res.redirect('/urls');      
   }
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = {user: req.cookies['user_id']};
+  checkUser(req, res);
+  let templateVars = {user: req.cookies.user_id};
   res.render("urls_new", templateVars);
 });
 
@@ -133,6 +161,7 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
+
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: req.cookies.user_id };
   res.render('urls_show', templateVars);
 });

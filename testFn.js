@@ -29,4 +29,23 @@ const isMatchUsers = function (obj, value) {
   }
   return false;
 }
-console.log(isMatchUsers(users, 'user4@example.com'));
+// console.log(isMatchUsers(users, 'user4@example.com'));
+
+const urlDatabase = {
+  "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "userRandomID"},
+  "9sm5xK": {longURL: "http://www.google.com", userID: "user2RandomID"}
+};
+
+const urlsForUser = (data, id) => {
+  let shortURL;
+  let longURL;
+  for(let short in data) {
+    shortURL = short;
+    if (data[short].userID !== id) {
+      longURL = data[short].longURL;
+    }
+  }
+  return [shortURL, longURL]; 
+};
+
+console.log(urlsForUser(urlDatabase, 'userRandomID'))
