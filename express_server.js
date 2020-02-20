@@ -26,7 +26,7 @@ const checkUser = (req, res) => {
   }
 };
 
-const isUserOwnUrl = () => {
+const registerID = (string) => {
 
 };
 
@@ -113,7 +113,8 @@ app.post('/register', (req, res) => {
       email: req.body.email,
       password: req.body.password
     };
-    res.cookie('user_id', users[newUser]); 
+    res.cookie('user_id', users[newUser].id); 
+    console.log(users[newUser])
     res.redirect('/urls');      
   }
 });
@@ -172,11 +173,13 @@ app.post('/urls/:shortURL', (req, res) => {
 });
 
 app.post('/urls/:shortURL/update', (req, res) =>{
+  checkUser(req, res);
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect('/urls');
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
+  checkUser(req, res);
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 });
