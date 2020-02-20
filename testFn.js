@@ -39,13 +39,14 @@ const urlDatabase = {
 const urlsForUser = (data, id) => {
   let shortURL;
   let longURL;
+
   for(let short in data) {
     shortURL = short;
-    if (data[short].userID !== id) {
+    if (data[short].userID == id) {
       longURL = data[short].longURL;
     }
   }
   return [shortURL, longURL]; 
 };
 
-console.log(urlsForUser(urlDatabase, 'userRandomID'))
+// console.log(urlsForUser(urlDatabase, 'user2RandomID'))
