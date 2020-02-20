@@ -72,7 +72,13 @@ const urlsForUser = (data, id) => {
   return resultArr; 
 };
 
-
+const logedUser = (data, id) => {
+  for (let short in data) {
+    if (data[short].userID === id) {
+      return data[short].userID;
+    }
+  }
+}
 
 const urlDatabase = {
   "b2xVn2": {longURL: "http://www.lighthouselabs.ca", userID: "userRandomID"},
@@ -114,7 +120,6 @@ app.post('/register', (req, res) => {
       password: req.body.password
     };
     res.cookie('user_id', users[newUser].id); 
-    console.log(users[newUser])
     res.redirect('/urls');      
   }
 });
@@ -148,7 +153,7 @@ app.post('/login', (req, res) => {
   //check if user exists
   let user = userObject(users, req.body.email)
   if (user.email === req.body.email && user.password === req.body.password) {
-    res.cookie('user_id', user);
+    res.cookie('user_id', user.id);
     res.redirect('/urls')
   } else {
     res.status(403).send('User is not found');    
@@ -169,19 +174,20 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.post('/urls/:shortURL', (req, res) => {
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: req.cookies.user_id};
+  console.log(urlDatabase[req.params.shortURL].longURL)
   res.render('urls_show', templateVars);
 });
 
 app.post('/urls/:shortURL/update', (req, res) =>{
-  checkUser(req, res);
   urlDatabase[req.params.shortURL] = req.body.longURL;
   res.redirect('/urls');
 });
 
 app.post('/urls/:shortURL/delete', (req, res) => {
-  checkUser(req, res);
-  delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls');
+
+    delete urlDatabase[req.params.shortURL];
+    res.redirect('/urls');
+
 });
 
 app.get("/u/:shortURL", (req, res) => {
