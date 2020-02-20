@@ -7,11 +7,11 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <% if (user === undefined) { %>
+        <!-- <% if (user === undefined) { %> -->
           <a class="nav-item nav-link" href="/login">Create New URL</a>
-          <% } else { %>
+          <!-- <% } else { %> -->
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <% } %>
+        <!-- <% } %> -->
       </div>
     </div>
     <div>
@@ -22,7 +22,7 @@
             </div>
             <% } else { %>
               <form class="form-inline" style="display:inline-flex" method="POST" action="/logout">
-              <span>Logged in as: <%= user%>!</span>
+              <span>Logged in as: <%= user.email %>!</span>
               <button type="submit" class="btn btn-primary">Logout</button>
             </form>
         <% } %>
