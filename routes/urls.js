@@ -16,16 +16,15 @@ routes.get('/', (req, res) => {
 // 'NEW ===========================================================================================
 
 routes.get("/new", (req, res) => {
-  // checkUser(req, res);
+  checkUser(req, res);
   let templateVars = { user: users[req.session.user_id] };
-  // console.log(templateVars)
   res.render("urls_new", templateVars);
 });
 
 routes.post("/new", (req, res) => {
   //generates random shortURL, submit new short: long key-value pair to urlDatabase and redirects to urls_show page
   let shortURL = randomShortURL();
-  urlDatabase[shortURL] = { longURL: req.body.longURL, userID: req.session.user_id }
+  urlDatabase[shortURL] = { longURL: req.body.longURL, userID: req.session.user_id };
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -39,7 +38,7 @@ routes.get('/:shortURL', (req, res) => {
 
 routes.post('/:shortURL/update', (req, res) => {
   checkUser(req, res);
-  const shortURL = req.params.shortURL
+  const shortURL = req.params.shortURL;
   urlDatabase[shortURL].longURL = req.body.longURL;
   res.redirect(`/urls/${shortURL}`);
 });

@@ -27,11 +27,9 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 How to test?
 
-$ npm install -g mocha
+`$ npm install mocha chai --save-dev`
 
-$ npm install
-
-$ mocha
+`$ npm test`
 
 Packages used:
 
