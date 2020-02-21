@@ -36,6 +36,7 @@ app.post('/register', (req, res) => {
   }
   //check if email already exist
   let user = userObject(users, req.body.email);
+
   if (getUserByEmail(user.email, users)) {
     res.status(400).send('Bad request. User already exist');
   } else {
@@ -92,8 +93,11 @@ app.post('/logout', (req, res) => {
 // /U/:shortURL==========================================================================================
 
 app.get("/u/:shortURL", (req, res) => {
+  // console.log(req.body)
+  // let longURL = req.body.longURL;
   let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
   res.render('urls_show', templateVars);
+  // res.redirect(longURL);
 });
 
 app.listen(PORT, () => {

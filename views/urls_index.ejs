@@ -29,7 +29,7 @@
         <% urls.forEach(url => { %>
           <tr>
             <td><%= url.shortURL %></td>
-            <td><%= url.longURL %></td> 
+            <td><a href="<%= url.longURL %>"><%= url.longURL %></a></td>
             <td>
               <a href="/urls/<%= url.shortURL %>" class="btn btn-primary">Edit</a>
             </td>          
