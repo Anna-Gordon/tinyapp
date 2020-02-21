@@ -1,25 +1,4 @@
-const users = {
-  'userrandomID': {
-    id: 'userRandomID',
-    email: 'user@example.com',
-    password: 'purple-monkey-dinosaur'
-  },
-  'user3RandomID': {
-    id: 'user3RandomID', 
-    email: 'user3@example.com', 
-    password: 'dishwasher-funk'
-  },
-  'user4RandomID': {
-    id: 'user4RandomID', 
-    email: 'user4@example.com', 
-    password: 'dishwasher-funk'
-  },
-  'user2RandomID': {
-    id: 'user2RandomID', 
-    email: 'user2@example.com', 
-    password: 'dishwasher-funk'
-  }
-}
+const bcrypt = require('bcrypt');
 
 const isMatchUsers = function (obj, value) {
   for(let key in obj) {
@@ -50,3 +29,29 @@ const urlsForUser = (data, id) => {
 };
 
 // console.log(urlsForUser(urlDatabase, 'user2RandomID'))
+
+const users = {
+  'userRandomID': {
+    id: 'userRandomID',
+    email: 'user@example.com',
+    password: bcrypt.hashSync('test1', 10)
+  },
+  'user2RandomID': {
+    id: 'user2RandomID', 
+    email: 'user2@example.com', 
+    password: bcrypt.hashSync('test2', 10)
+  }
+};
+
+
+const getUserByEmail = (email, database) => {
+  for(let key in database) {
+    if (database[key].email === email) {
+      return database[key].id;
+    } else {
+      return false;
+    }
+  }
+};
+
+console.log(getUserByEmail('user@example.com', users));
