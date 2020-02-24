@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const app = express();
-const { randomShortURL, userObject, urlsForUser, getUserByEmail, checkUser, users, urlDatabase } = require('./helpers.js');
+const { randomShortURL, userObject, getUserByEmail, users, urlDatabase } = require('./helpers.js');
 const urlRoutes = require('./routes/urls');
 
 //  MIDDLEWARE==============================================================================================
@@ -21,7 +21,7 @@ app.use('/urls', urlRoutes);
 // '/REGISTER ===============================================================================================
 
 app.get('/register', (req, res) => {
-  let templateVars = {
+  const templateVars = {
     urls: urlDatabase,
     user: req.session.user_id
   };
@@ -30,7 +30,7 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   // check if input was provided
-  if (req.body.email === '' || req.body.password === '') {
+  if (!req.body.email || !req.body.password) {
     res.status(400).send('Bad request. Provide email or password');
     res.redirect('/register');
   }
@@ -54,7 +54,7 @@ app.post('/register', (req, res) => {
 // '/LOGIN ============================================================================================
 
 app.get('/login', (req, res) => {
-  let templateVars = {
+  const templateVars = {
     urls: urlDatabase,
     user: req.session.user_id
   };
@@ -62,9 +62,9 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  if (req.body.email === '' || req.body.password === '') {
-    res.status(400).send('Bad request. Provide email or password');
-    res.redirect('/register');
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).send('Bad request. Provide email or password');
+    // res.redirect('/register');
   }
 
   //check if user exists
@@ -75,11 +75,11 @@ app.post('/login', (req, res) => {
       if (result) {
         res.redirect('/urls');
       } else {
-        res.status(400).send('Invalide password');
+        return res.status(400).send('Invalide password');
       }
     });
   } else {
-    res.status(404).send('User is not found');
+    return res.status(404).send('User is not found');
   }
 });
 
@@ -93,8 +93,12 @@ app.post('/logout', (req, res) => {
 // '/U/:shortURL==========================================================================================
 
 app.get("/u/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
-  res.render('urls_show', templateVars);
+  if (urlDatabase[req.params.shortURL]) {
+    const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id] };
+    res.render('urls_show', templateVars);
+  } else {
+    return res.status(404).send('ShortURL is not found');
+  }
 });
 
 app.listen(PORT, () => {

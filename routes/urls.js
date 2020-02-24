@@ -6,7 +6,7 @@ const { randomShortURL, urlsForUser, checkUser, users, urlDatabase } = require('
 
 routes.get('/', (req, res) => {
   checkUser(req, res);
-  let templateVars = {
+  const templateVars = {
     urls: urlsForUser(urlDatabase, req.session.user_id),
     user: users[req.session.user_id]
   };
@@ -17,7 +17,7 @@ routes.get('/', (req, res) => {
 
 routes.get("/new", (req, res) => {
   checkUser(req, res);
-  let templateVars = { user: users[req.session.user_id] };
+  const templateVars = { user: users[req.session.user_id] };
   res.render("urls_new", templateVars);
 });
 
@@ -32,7 +32,7 @@ routes.post("/new", (req, res) => {
 
 routes.get('/:shortURL', (req, res) => {
   checkUser(req, res);
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.session.user_id] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]['longURL'], user: users[req.session.user_id] };
   res.render('urls_show', templateVars);
 });
 

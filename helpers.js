@@ -60,7 +60,6 @@ const getUserByEmail = (email, database) => {
       return database[key].id;
     }
   }
-  return false;
 };
 
 
